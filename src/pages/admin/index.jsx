@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Card,
   Col,
@@ -29,9 +29,9 @@ import { useNavigate } from "react-router-dom";
 
 const Admin = () => {
   const navigate = useNavigate();
-
   const [form] = Form.useForm();
   const [modalOpen, setModalOpen] = useState(false);
+  const [isEditMode, setIsEditMode] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [detailsModal, setDetailsModal] = useState(false);
   const [search, setSearch] = useState("");
@@ -59,7 +59,7 @@ const Admin = () => {
       role: "Sotuvchi",
       joined: "2025-06-19",
       phone: "+99893 999-88-77",
-      address: "Buxoro, G‘ijduvon",
+      address: "Buxoro, G'ijduvon",
     },
   ]);
 
@@ -70,7 +70,7 @@ const Admin = () => {
 
   const deleteUser = (key) => {
     setUsers((prev) => prev.filter((u) => u.key !== key));
-    message.success("Foydalanuvchi o‘chirildi");
+    message.success("Foydalanuvchi o'chirildi");
   };
 
   const showDetails = (user) => {
@@ -78,16 +78,27 @@ const Admin = () => {
     setDetailsModal(true);
   };
 
-  const handleAdd = () => {
+  const handleAddOrEdit = () => {
     form.validateFields().then((values) => {
-      const newUser = {
-        ...values,
-        key: Date.now(),
-      };
-      setUsers((prev) => [...prev, newUser]);
-      message.success("Foydalanuvchi qo‘shildi");
-      form.resetFields();
+      if (isEditMode) {
+        setUsers((prev) =>
+          prev.map((u) =>
+            u.key === selectedUser.key ? { ...u, ...values } : u
+          )
+        );
+        message.success("Foydalanuvchi tahrirlandi");
+      } else {
+        const newUser = {
+          ...values,
+          key: Date.now(),
+        };
+        setUsers((prev) => [...prev, newUser]);
+        message.success("Foydalanuvchi qo'shildi");
+      }
+
       setModalOpen(false);
+      setIsEditMode(false);
+      form.resetFields();
     });
   };
 
@@ -140,7 +151,7 @@ const Admin = () => {
       ),
     },
     {
-      title: "Qo‘shilgan sana",
+      title: "Qo'shilgan sana",
       dataIndex: "joined",
     },
     {
@@ -149,7 +160,12 @@ const Admin = () => {
         <div className="flex gap-2">
           <Button
             icon={<Edit size={16} />}
-            onClick={() => message.info("Tahrirlash keyin qo‘shiladi")}
+            onClick={() => {
+              form.setFieldsValue(record);
+              setSelectedUser(record);
+              setIsEditMode(true);
+              setModalOpen(true);
+            }}
           />
           <Popconfirm
             title="Ishonchingiz komilmi?"
@@ -205,9 +221,14 @@ const Admin = () => {
         <Button
           type="primary"
           icon={<PlusCircle size={18} />}
-          onClick={() => setModalOpen(true)}
+          onClick={() => {
+            form.resetFields();
+            setSelectedUser(null);
+            setIsEditMode(false);
+            setModalOpen(true);
+          }}
         >
-          Foydalanuvchi qo‘shish
+          Foydalanuvchi qo'shish
         </Button>
       </div>
 
@@ -217,10 +238,14 @@ const Admin = () => {
 
       <Modal
         open={modalOpen}
-        title="📝 Yangi foydalanuvchi qo‘shish"
-        onCancel={() => setModalOpen(false)}
-        onOk={handleAdd}
-        okText="Qo‘shish"
+        title={isEditMode ? "✏️ Foydalanuvchini tahrirlash" : "📝 Yangi foydalanuvchi qo'shish"}
+        onCancel={() => {
+          setModalOpen(false);
+          setIsEditMode(false);
+          form.resetFields();
+        }}
+        onOk={handleAddOrEdit}
+        okText={isEditMode ? "Saqlash" : "Qo'shish"}
         cancelText="Bekor qilish"
       >
         <Form layout="vertical" form={form}>
@@ -230,7 +255,7 @@ const Admin = () => {
           <Form.Item label="Roli" name="role" rules={[{ required: true }]}>
             <Input placeholder="Sotuvchi yoki Haridor" />
           </Form.Item>
-          <Form.Item label="Qo‘shilgan sana" name="joined" rules={[{ required: true }]}>
+          <Form.Item label="Qo'shilgan sana" name="joined" rules={[{ required: true }]}>
             <Input type="date" />
           </Form.Item>
           <Form.Item label="Telefon" name="phone">
