@@ -1,9 +1,9 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Home from "../pages/home";
-import Login from "../pages/Login";
-import Admin from "../pages/Admin";
-import Seller from "../pages/Seller";
-import Buyer from "../pages/Buyer";
+import Login from "../pages/login";
+import Admin from "../pages/admin";
+import Seller from "../pages/seller";
+import Buyer from "../pages/buyer";
 import ProtectedRoute from "../components/protected-route";
 
 const AppRouter = () => {
