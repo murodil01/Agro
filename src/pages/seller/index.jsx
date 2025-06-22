@@ -57,7 +57,7 @@ const Seller = () => {
       title: "⚙️ Amal",
       key: "action",
       render: (_, record) => (
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <Button
             onClick={() => handleEdit(record)}
             disabled={editingKey === record.key}
@@ -74,32 +74,34 @@ const Seller = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 via-white to-green-200 flex items-start justify-center py-10 px-4">
-      <div className="w-[90%] bg-white rounded-2xl shadow-lg p-8 border border-gray-100 relative">
-        <div className="absolute top-6 right-6">
+      <div className="w-full max-w-5xl bg-white rounded-2xl shadow-lg p-6 sm:p-8 border border-gray-100">
+
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <h2 className="text-2xl font-bold text-green-700">
+            🌿 Mahsulot qo'shish
+          </h2>
           <Button
             onClick={handleLogout}
             type="primary"
             danger
             icon={<LogOut size={16} className="mr-1" />}
+            className="w-full sm:w-auto"
           >
             Chiqish
           </Button>
         </div>
 
-        <h2 className="text-2xl font-bold text-center text-green-700 mb-6">
-          🌿 Mahsulot qo'shish
-        </h2>
-
         <Form
           layout="vertical"
           onFinish={onFinish}
           form={form}
-          className="space-y-4"
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           <Form.Item
             label="Mahsulot nomi"
             name="name"
             rules={[{ required: true, message: "Mahsulot nomi majburiy!" }]}
+            className="col-span-1"
           >
             <Input placeholder="Masalan: Pomidor" size="large" />
           </Form.Item>
@@ -108,6 +110,7 @@ const Seller = () => {
             label="Narxi (so'm)"
             name="price"
             rules={[{ required: true, message: "Narxni kiriting!" }]}
+            className="col-span-1"
           >
             <InputNumber
               placeholder="Narxni kiriting"
@@ -116,7 +119,11 @@ const Seller = () => {
             />
           </Form.Item>
 
-          <Form.Item label="Tavsifi" name="description">
+          <Form.Item
+            label="Tavsifi"
+            name="description"
+            className="col-span-1 md:col-span-2"
+          >
             <Input.TextArea
               placeholder="Mahsulot haqida qisqacha ma'lumot"
               rows={3}
@@ -124,7 +131,7 @@ const Seller = () => {
             />
           </Form.Item>
 
-          <Form.Item>
+          <Form.Item className="col-span-1 md:col-span-2">
             <Button
               htmlType="submit"
               icon={<PlusCircle className="mr-2" size={18} />}
@@ -140,13 +147,15 @@ const Seller = () => {
           <h3 className="text-xl font-semibold text-gray-700 mb-4">
             📋 Qo'shilgan mahsulotlar ro'yxati
           </h3>
-          <Table
-            dataSource={products}
-            columns={columns}
-            pagination={false}
-            bordered
-            className="rounded-xl overflow-hidden"
-          />
+          <div className="overflow-x-auto">
+            <Table
+              dataSource={products}
+              columns={columns}
+              pagination={false}
+              bordered
+              className="rounded-xl min-w-[600px]"
+            />
+          </div>
         </div>
       </div>
     </div>
