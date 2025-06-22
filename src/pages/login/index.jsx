@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Button, Input, Form, message } from "antd";
-import { LogIn } from "lucide-react";
+import { Loader } from "lucide-react";
+import { useState } from "react";
 
 const users = [
   { username: "Admin", password: "123456", role: "admin" },
@@ -10,21 +11,29 @@ const users = [
 
 const Login = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
 
   const onFinish = ({ username, password }) => {
-    const user = users.find(
-      (u) => u.username === username && u.password === password
-    );
-    if (user) {
-      localStorage.setItem("user", JSON.stringify(user));
-      navigate(`/${user.role}`);
-    } else {
-      message.error("Login yoki parol xato!");
-    }
+    setLoading(true);
+
+    setTimeout(() => {
+      const user = users.find(
+        (u) => u.username === username && u.password === password
+      );
+
+      if (user) {
+        localStorage.setItem("user", JSON.stringify(user));
+        navigate(`/${user.role}`);
+      } else {
+        message.error("Login yoki parol xato!");
+      }
+
+      setLoading(false);
+    }, 1000);
   };
 
   const handleClose = () => {
-    navigate("/"); 
+    navigate("/");
   };
 
   return (
@@ -59,17 +68,24 @@ const Login = () => {
           <Form.Item>
             <Button
               htmlType="submit"
+              type="primary"
               size="large"
+              disabled={loading}
               className="bg-green-600 hover:bg-green-700 text-white w-full flex items-center justify-center"
-              icon={<LogIn className="mr-2" size={18} />}
             >
-              Kirish
+              {loading ? (
+                <Loader className="animate-spin" size={20} />
+              ) : (
+                <>Kirish</>
+              )}
             </Button>
           </Form.Item>
         </Form>
 
         <p className="text-xs text-center text-gray-400 mt-4">
-          Foydalanuvchi: <strong>Admin</strong> / <strong>Seller</strong> / <strong>Buyer</strong><br />
+          Foydalanuvchi: <strong>Admin</strong> / <strong>Seller</strong> /{" "}
+          <strong>Buyer</strong>
+          <br />
           Parol: <strong>123456</strong>
         </p>
       </div>
