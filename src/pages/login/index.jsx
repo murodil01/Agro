@@ -23,12 +23,24 @@ const Login = () => {
     }
   };
 
+  const handleClose = () => {
+    navigate("/"); 
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 via-white to-green-200">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 border border-gray-100 relative">
+        <button
+          onClick={handleClose}
+          className="absolute top-4 right-4 text-gray-400 hover:text-black text-xl font-bold"
+        >
+          x
+        </button>
+
         <h2 className="text-2xl font-bold text-center text-green-700 mb-6">
           🌿 AgroFresh Tizimga Kirish
         </h2>
+
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
             label="Login"
@@ -55,6 +67,7 @@ const Login = () => {
             </Button>
           </Form.Item>
         </Form>
+
         <p className="text-xs text-center text-gray-400 mt-4">
           Foydalanuvchi: <strong>Admin</strong> / <strong>Seller</strong> / <strong>Buyer</strong><br />
           Parol: <strong>123456</strong>
