@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, Row, Col, Badge, Tooltip, Button, Empty, Modal } from "antd";
 import {
   ShoppingCart,
@@ -63,8 +63,17 @@ const mockVegetables = [
 
 const Buyer = () => {
   const [products] = useState(mockVegetables);
-  const [cart, setCart] = useState({});
-  const [liked, setLiked] = useState([]);
+
+  const [cart, setCart] = useState(() => {
+    const stored = localStorage.getItem("buyer_cart");
+    return stored ? JSON.parse(stored) : {};
+  });
+
+  const [liked, setLiked] = useState(() => {
+    const stored = localStorage.getItem("buyer_liked");
+    return stored ? JSON.parse(stored) : [];
+  });
+
   const [openCart, setOpenCart] = useState(false);
   const [openLikesModal, setOpenLikesModal] = useState(false);
 
@@ -124,12 +133,18 @@ const Buyer = () => {
     0
   );
 
+  useEffect(() => {
+    localStorage.setItem("buyer_cart", JSON.stringify(cart));
+  }, [cart]);
+
+  useEffect(() => {
+    localStorage.setItem("buyer_liked", JSON.stringify(liked));
+  }, [liked]);
+
   return (
     <div className="min-h-screen bg-green-50 pb-10">
       <div className="bg-white shadow-md px-6 py-4 flex justify-between items-center sticky top-0 z-10">
-        <h1 className="text-xl font-bold text-green-700">
-          🌿 Vegetable Market
-        </h1>
+        <h1 className="text-xl font-bold text-green-700">🌿 Vegetable Market</h1>
         <div className="flex items-center gap-4">
           <Badge count={liked.length}>
             <Heart
